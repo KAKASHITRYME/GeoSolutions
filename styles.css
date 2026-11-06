@@ -579,6 +579,30 @@ a {
   margin-top: 1rem;
 }
 
+.contact-action {
+  border-radius: 10px;
+  color: var(--white);
+  display: inline-block;
+  font-weight: 600;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+}
+
+.contact-action:hover,
+.contact-action:focus-visible {
+  color: var(--white);
+}
+
+.email-button {
+  background: var(--navy-900);
+}
+
+.email-button:hover,
+.email-button:focus-visible {
+  background: var(--navy-700);
+}
+
 .contact-form .whatsapp-button {
   background: #128c7e;
 }

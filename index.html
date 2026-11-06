@@ -177,51 +177,30 @@
 
     <!-- CONTACT SECTION -->
     <section class="consultant-card contact-section" id="contact">
-      <form
-        class="contact-form"
-        id="contact-form"
-        action="https://formsubmit.co/rayanyussif291@gmail.com"
-        method="POST"
-      >
+      <div class="contact-form">
         <h3><i class="fas fa-paper-plane"></i> Send an enquiry</h3>
-        <p class="form-help">Choose a service and contact us by email or WhatsApp.</p>
-        <input type="hidden" name="_subject" value="New GeoSolutions enquiry">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="true">
-        <input type="hidden" name="_autoresponse" value="Thank you for contacting GeoSolutions. We have received your enquiry and will respond shortly.">
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="contact-name">Name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required>
-          </div>
-          <div class="form-field">
-            <label for="contact-email">Email</label>
-            <input id="contact-email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div class="form-field full-width">
-            <label for="contact-service">Service needed</label>
-            <select id="contact-service" name="service" required>
-              <option value="">Select a service</option>
-              <option>GIS Mapping/Spatial Analysis</option>
-              <option>Remote Sensing/GEE</option>
-              <option>Site Selection</option>
-              <option>Land Measurement</option>
-              <option>Track property parcels</option>
-            </select>
-          </div>
-        </div>
+        <p class="form-help">Choose how you would like to send your project enquiry.</p>
         <div class="form-actions">
-          <button type="submit"><i class="fas fa-envelope"></i> Send by email</button>
-          <button type="button" class="whatsapp-button" id="whatsapp-enquiry">
-            <i class="fab fa-whatsapp"></i> Send selected service on WhatsApp
-          </button>
+          <a
+            class="contact-action email-button"
+            href="mailto:rayanyussif291@gmail.com?subject=GeoSolutions%20project%20enquiry&body=Hello%20Yussif%2C%0A%0AI%20would%20like%20to%20discuss%20a%20project.%20I%20will%20attach%20my%20project%20files%20to%20this%20email."
+          >
+            <i class="fas fa-envelope"></i> Send project by email
+          </a>
+          <a
+            class="contact-action whatsapp-button"
+            href="https://wa.me/233533183329?text=Hello%20Yussif%2C%20I%20would%20like%20to%20discuss%20a%20geospatial%20project."
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+          </a>
         </div>
         <p class="form-contact-note">
           Email: <a href="mailto:rayanyussif291@gmail.com">rayanyussif291@gmail.com</a>
           · WhatsApp: <a href="https://wa.me/233533183329" target="_blank" rel="noopener noreferrer">0533183329</a>
         </p>
-        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-      </form>
+      </div>
     </section>
   </div>
 
