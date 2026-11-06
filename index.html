@@ -58,7 +58,9 @@
         <i class="fas fa-envelope"></i>
         <div>
           <div class="label">Email</div>
-          <div class="value">rayanyussif291@gmail.com</div>
+          <div class="value">
+            <a href="mailto:rayanyussif291@gmail.com">rayanyussif291@gmail.com</a>
+          </div>
           <div class="sub">Response within 24h</div>
         </div>
       </div>
@@ -67,8 +69,21 @@
         <i class="fas fa-phone-alt"></i>
         <div>
           <div class="label">Phone</div>
-          <div class="value">+233 533183329</div>
+          <div class="value">
+            <a href="tel:+233533183329">+233 533183329</a>
+          </div>
           <div class="sub">Mon–Fri, 8am – 5pm GMT</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <i class="fab fa-whatsapp"></i>
+        <div>
+          <div class="label">WhatsApp</div>
+          <div class="value">
+            <a href="https://wa.me/233533183329?text=Hello%20Yussif%2C%20I%20would%20like%20to%20discuss%20a%20geospatial%20project." target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+          </div>
+          <div class="sub">Quick questions and project discussions</div>
         </div>
       </div>
     </div>
@@ -167,10 +182,9 @@
         id="contact-form"
         action="https://formsubmit.co/rayanyussif291@gmail.com"
         method="POST"
-        enctype="multipart/form-data"
       >
         <h3><i class="fas fa-paper-plane"></i> Send an enquiry</h3>
-        <p class="form-help">Send your project details and attachments securely to our enquiry inbox.</p>
+        <p class="form-help">Choose a service and contact us by email or WhatsApp.</p>
         <input type="hidden" name="_subject" value="New GeoSolutions enquiry">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="true">
@@ -189,37 +203,23 @@
             <select id="contact-service" name="service" required>
               <option value="">Select a service</option>
               <option>GIS Mapping/Spatial Analysis</option>
-              <option> Remote Sensing/GEE</option>
+              <option>Remote Sensing/GEE</option>
               <option>Site Selection</option>
               <option>Land Measurement</option>
               <option>Track property parcels</option>
             </select>
           </div>
-          <div class="form-field full-width">
-            <label for="contact-message">Message</label>
-            <textarea id="contact-message" name="message" placeholder="Tell us about your project..." required></textarea>
-          </div>
-          <div class="form-field full-width">
-            <label for="contact-files">Project files and photos</label>
-            <div class="file-upload" id="file-upload">
-              <input
-                id="contact-files"
-                name="files"
-                type="file"
-                multiple
-                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.zip"
-              >
-              <label class="file-upload-label" for="contact-files">
-                <i class="fas fa-cloud-arrow-up" aria-hidden="true"></i>
-                <span>Choose files or drag them here</span>
-                <small>Photos, maps, documents, spreadsheets or ZIP files · up to 10 files, 25 MB each</small>
-              </label>
-              <p class="file-upload-help">You can select several files at once, including draft photos.</p>
-              <ul class="file-list" id="file-list" aria-live="polite"></ul>
-            </div>
-          </div>
         </div>
-        <button type="submit"><i class="fas fa-paper-plane"></i> Submit enquiry</button>
+        <div class="form-actions">
+          <button type="submit"><i class="fas fa-envelope"></i> Send by email</button>
+          <button type="button" class="whatsapp-button" id="whatsapp-enquiry">
+            <i class="fab fa-whatsapp"></i> Send selected service on WhatsApp
+          </button>
+        </div>
+        <p class="form-contact-note">
+          Email: <a href="mailto:rayanyussif291@gmail.com">rayanyussif291@gmail.com</a>
+          · WhatsApp: <a href="https://wa.me/233533183329" target="_blank" rel="noopener noreferrer">0533183329</a>
+        </p>
         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
       </form>
     </section>

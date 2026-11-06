@@ -36,119 +36,87 @@
 
   const contactForm = document.getElementById('contact-form');
   const formStatus = document.getElementById('form-status');
-  const fileInput = document.getElementById('contact-files');
-  const fileUpload = document.getElementById('file-upload');
-  const fileList = document.getElementById('file-list');
-  const selectedFiles = [];
-  const maxFiles = 10;
-  const maxFileSize = 25 * 1024 * 1024;
-  const allowedFileTypes = /^(image\/|application\/pdf|application\/msword|application\/vnd\.openxmlformats-officedocument|application\/vnd\.ms-excel|text\/csv|application\/zip|application\/x-zip-compressed)/i;
-  const allowedFileExtensions = /\.(jpe?g|png|gif|webp|heic|pdf|docx?|xlsx?|csv|zip)$/i;
-
-  const formatFileSize = (bytes) => {
-    if (bytes < 1024 * 1024) return `${Math.ceil(bytes / 1024)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
-
-  const renderFiles = () => {
-    if (!fileList) return;
-    fileList.replaceChildren();
-
-    selectedFiles.forEach((file, index) => {
-      const item = document.createElement('li');
-      item.className = 'file-list-item';
-
-      const details = document.createElement('span');
-      details.className = 'file-details';
-      details.textContent = `${file.name} (${formatFileSize(file.size)})`;
-
-      const removeButton = document.createElement('button');
-      removeButton.type = 'button';
-      removeButton.className = 'file-remove';
-      removeButton.setAttribute('aria-label', `Remove ${file.name}`);
-      removeButton.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
-      removeButton.addEventListener('click', () => {
-        selectedFiles.splice(index, 1);
-        syncFileInput();
-        renderFiles();
-      });
-
-      item.append(details, removeButton);
-
-      if (file.type.startsWith('image/')) {
-        const preview = document.createElement('img');
-        preview.className = 'file-preview';
-        preview.alt = `Preview of ${file.name}`;
-        preview.src = URL.createObjectURL(file);
-        preview.addEventListener('load', () => URL.revokeObjectURL(preview.src), { once: true });
-        item.prepend(preview);
-      }
-
-      fileList.appendChild(item);
-    });
-  };
-
-  const syncFileInput = () => {
-    if (!fileInput || typeof DataTransfer === 'undefined') return;
-    const dataTransfer = new DataTransfer();
-    selectedFiles.forEach((file) => dataTransfer.items.add(file));
-    fileInput.files = dataTransfer.files;
-  };
-
-  const addFiles = (files) => {
-    const errors = [];
-    Array.from(files).forEach((file) => {
-      if (selectedFiles.length >= maxFiles) {
-        errors.push(`You can attach up to ${maxFiles} files.`);
-        return;
-      }
-      if (file.size > maxFileSize) {
-        errors.push(`${file.name} is larger than 25 MB.`);
-        return;
-      }
-      if (!allowedFileTypes.test(file.type) && !allowedFileExtensions.test(file.name)) {
-        errors.push(`${file.name} is not a supported file type.`);
-        return;
-      }
-      if (!selectedFiles.some((selectedFile) => (
-        selectedFile.name === file.name
-        && selectedFile.size === file.size
-        && selectedFile.lastModified === file.lastModified
-      ))) {
-        selectedFiles.push(file);
-      }
-    });
-    syncFileInput();
-    renderFiles();
-    if (errors.length && formStatus) {
-      formStatus.className = 'form-status error';
-      formStatus.textContent = errors.join(' ');
-    }
-  };
-
-  fileInput?.addEventListener('change', () => {
-    addFiles(fileInput.files);
-    fileInput.value = '';
-  });
-
-  fileUpload?.addEventListener('dragover', (event) => {
-    event.preventDefault();
-    fileUpload.classList.add('is-dragging');
-  });
-  fileUpload?.addEventListener('dragleave', () => fileUpload.classList.remove('is-dragging'));
-  fileUpload?.addEventListener('drop', (event) => {
-    event.preventDefault();
-    fileUpload.classList.remove('is-dragging');
-    addFiles(event.dataTransfer.files);
-  });
+  const serviceSelect = document.getElementById('contact-service');
+  const whatsappButton = document.getElementById('whatsapp-enquiry');
 
   if (contactForm && formStatus) {
-    contactForm.addEventListener('submit', () => {
-      syncFileInput();
-      formStatus.className = 'form-status success';
-      formStatus.textContent = 'Sending your enquiry and attachments...';
+    contactForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submitButton = contactForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton?.innerHTML;
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      }
+      formStatus.className = 'form-status';
+      formStatus.textContent = 'Sending your enquiry...';
+
+      try {
+        const formData = new FormData(contactForm);
+        const ajaxAction = contactForm.action.replace(
+          'https://formsubmit.co/',
+          'https://formsubmit.co/ajax/'
+        );
+        const response = await fetch(ajaxAction, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Form submission failed with status ${response.status}`);
+        }
+
+        contactForm.reset();
+        formStatus.className = 'form-status success';
+        formStatus.textContent = 'Thank you. Your enquiry was sent successfully.';
+      } catch (error) {
+        console.error('Unable to send enquiry:', error);
+        const formData = new FormData(contactForm);
+        const emailSubject = encodeURIComponent(`GeoSolutions enquiry from ${formData.get('name')}`);
+        const emailBody = encodeURIComponent([
+          `Name: ${formData.get('name')}`,
+          `Email: ${formData.get('email')}`,
+          `Service: ${formData.get('service')}`
+        ].join('\n'));
+
+        formStatus.className = 'form-status error';
+        formStatus.innerHTML = `Form service is temporarily unavailable (522). <a href="mailto:rayanyussif291@gmail.com?subject=${emailSubject}&body=${emailBody}">Open your email app to send this enquiry directly</a>.`;
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        }
+      }
     });
   }
+
+  whatsappButton?.addEventListener('click', () => {
+    if (!contactForm || !serviceSelect?.value) {
+      if (formStatus) {
+        formStatus.className = 'form-status error';
+        formStatus.textContent = 'Please select a service before opening WhatsApp.';
+      }
+      serviceSelect?.focus();
+      return;
+    }
+
+    const name = contactForm.elements.name.value.trim();
+    const email = contactForm.elements.email.value.trim();
+    const message = [
+      'Hello Yussif, I would like to enquire about your services.',
+      `Service needed: ${serviceSelect.value}`,
+      name ? `Name: ${name}` : '',
+      email ? `Email: ${email}` : ''
+    ].filter(Boolean).join('\n');
+
+    window.open(
+      `https://wa.me/233533183329?text=${encodeURIComponent(message)}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
+  });
 
   const gallerySlides = Array.from(document.querySelectorAll('.gallery-slide'));
   const prevButton = document.querySelector('[data-gallery="prev"]');
